@@ -1,0 +1,89 @@
+name: hal
+base: core20
+adopt-info: hal
+summary: HAL - The Hardware Analyzer
+description: |
+  HAL is a comprehensive netlist reverse engineering and manipulation framework.
+  Virtually all available research on netlist analysis operates on a graph-based
+  representation of the netlist under inspection. At its core, HAL provides exactly
+  that: A framework to parse netlists of arbitrary sources, e.g., FPGAs or ASICs,
+  into a graph-based netlist representation and to provide the necessary built-in
+  tools for traversal and analysis of the included gates and nets.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+apps:
+  hal:
+    command: usr/bin/hal
+    environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu/:$SNAP/usr/lib/x86_64-linux-gnu/lapack/:$SNAP/usr/lib/x86_64-linux-gnu/blas/:$SNAP/usr/lib/x86_64-linux-gnu/hal_plugins
+
+    extensions:
+      - kde-neon
+    plugs:
+      - home
+      - desktop
+      - desktop-legacy
+      - wayland
+      - opengl
+      - x11
+      - unity7
+
+parts:
+  hal:
+    plugin: cmake
+    source: https://github.com/emsec/hal
+    source-type: git
+
+    build-snaps:
+      - kde-frameworks-5-qt-5-15-core20-sdk
+      - kde-frameworks-5-qt-5-15-core20
+    # source-depth: 1
+
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version "$(git describe --tags)"
+
+    build-packages:
+      - build-essential
+      - lsb-release
+      - pkgconf
+      - libboost-all-dev
+      - libpython3-dev
+      - ccache
+      - autoconf
+      - autotools-dev
+      - libsodium-dev
+      - ninja-build
+      - lcov
+      - gcovr
+      - python3-sphinx
+      - doxygen
+      - python3-sphinx-rtd-theme
+      - python3-jedi
+      - python3-pip
+      - pybind11-dev
+      - python3-pybind11
+      - rapidjson-dev
+      - libspdlog-dev
+      - libz3-dev
+      - python3-dateutil
+      - libigraph0-dev
+      - graphviz
+      - libomp-dev
+      - libsuitesparse-dev
+      - libgl-dev
+
+    stage-packages:
+      - libz3-4
+      - libpython3.8
+      - libigraph0v5
+      - libomp5-10
+      - libsodium23
+      - python3-jedi
+      - libspdlog1
+      - liblapack3
